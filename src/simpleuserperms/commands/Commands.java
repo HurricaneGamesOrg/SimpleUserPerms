@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import simpleuserperms.SimpleUserPerms;
+import simpleuserperms.storage.DefaultUserPermsCache;
 import simpleuserperms.storage.Group;
 import simpleuserperms.storage.GroupsStorage;
 import simpleuserperms.storage.UsersStorage;
@@ -32,6 +33,7 @@ public class Commands implements CommandExecutor {
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 			groups.load();
+			DefaultUserPermsCache.recalculateDefaultPerms();
 			users.load();
 			users.recalculateAll();
 			sender.sendMessage(ChatColor.GOLD + "Grops and users reloaded");
