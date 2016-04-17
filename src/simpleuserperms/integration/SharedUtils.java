@@ -40,6 +40,10 @@ public class SharedUtils {
 			if (simpleResult != null) {
 				return simpleResult;
 			}
+			Boolean allResult = effective.get("*");
+			if (allResult != null) {
+				return allResult;
+			}
 			String[] split = splitP.split(permission);
 			for (int i = split.length - 1; i > 0; i--) {
 				Boolean result = effective.get(makeWildCard(split, i));
