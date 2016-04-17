@@ -23,6 +23,7 @@ public class User {
 	protected final HashSet<Group> subGroups = new HashSet<>();
 	protected final HashSet<String> additionalPerms = new HashSet<>();
 	protected String prefix;
+	protected String suffix;
 
 	protected final HashMap<String, Boolean> activePermissions = new HashMap<>();
 
@@ -167,10 +168,6 @@ public class User {
 		}
 	}
 
-	public String getRawPrefix() {
-		return prefix;
-	}
-
 	public String getPrefix() {
 		if (prefix != null) {
 			return prefix;
@@ -181,6 +178,18 @@ public class User {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public String getSuffix() {
+		if (suffix != null) {
+			return suffix;
+		} else {
+			return group.getSuffix();
+		}
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	protected WeakReference<Player> player;

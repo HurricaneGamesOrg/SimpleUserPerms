@@ -49,6 +49,7 @@ public class GroupsStorage {
 	private static final String PARENT_CFG_STR = "parents";
 	private static final String PERMS_CFG_STR = "permissions";
 	private static final String PREFIX_CFG_STR = "prefix";
+	private static final String SUFFIX_CFG_STR = "suffix";
 	private static final String DEFAULT_CFG_STR = "default";
 
 	public void load() {
@@ -62,6 +63,7 @@ public class GroupsStorage {
 				group.addPermission(permission, false);
 			}
 			group.setPrefix(section.getString(PREFIX_CFG_STR));
+			group.setSuffix(section.getString(SUFFIX_CFG_STR));
 			groups.put(groupName, group);
 			if (section.getBoolean(DEFAULT_CFG_STR)) {
 				defaultGroup = group;
@@ -92,7 +94,8 @@ public class GroupsStorage {
 			ConfigurationSection section = config.createSection(group.getName());
 			section.set(PARENT_CFG_STR, group.getParentGroups().stream().map(Group::getName).collect(Collectors.toList()));
 			section.set(PERMS_CFG_STR, group.getPermissions());
-			section.set(PREFIX_CFG_STR, group.getPrefix());
+			section.set(PREFIX_CFG_STR, group.prefix);
+			section.set(SUFFIX_CFG_STR, group.suffix);
 			if (defaultGroup == group) {
 				section.set(DEFAULT_CFG_STR, true);
 			}

@@ -94,7 +94,7 @@ public class EssentialsIntegration extends Integration {
 
 		@Override
 		public String getSuffix(Player base) {
-			return "";
+			return users.getUser(base.getUniqueId()).getSuffix();
 		}
 
 		@Override

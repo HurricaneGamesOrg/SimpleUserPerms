@@ -24,6 +24,7 @@ public class Group {
 	protected final Set<Group> parentGroups = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	protected final Set<String> permissions = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	protected String prefix = "";
+	protected String suffix = "";
 
 	public List<Group> getParentGroups() {
 		return new ArrayList<Group>(parentGroups);
@@ -108,6 +109,23 @@ public class Group {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public String getSuffix() {
+		if (suffix != null) {
+			return suffix;
+		}
+		for (Group parent : parentGroups) {
+			String pprefix = parent.getSuffix();
+			if (pprefix != null) {
+				return pprefix;
+			}
+		}
+		return "";
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	@Override
