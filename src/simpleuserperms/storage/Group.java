@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.Bukkit;
-
 import simpleuserperms.SimpleUserPerms;
 
 public class Group {
@@ -88,9 +86,7 @@ public class Group {
 
 	public void update() {
 		UsersStorage users = SimpleUserPerms.getUsersStorage();
-		Bukkit.getOnlinePlayers().forEach(player -> {
-			users.getUser(player.getUniqueId()).recalculatePermissions();
-		});
+		users.recalculateAll();
 		DefaultUserPermsCache.recalculateDefaultPerms();
 	}
 

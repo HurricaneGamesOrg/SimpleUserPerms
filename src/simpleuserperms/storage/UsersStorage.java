@@ -21,6 +21,12 @@ public class UsersStorage {
 
 	private final ConcurrentHashMap<UUID, User> users = new ConcurrentHashMap<>();
 
+	public void recalculateAll() {
+		for (User user : users.values()) {
+			user.recalculatePermissions();
+		}
+	}
+
 	public User getUserIfPresent(UUID uuid) {
 		return users.get(uuid);
 	}
@@ -76,7 +82,6 @@ public class UsersStorage {
 				user.setSuffix(section.getString(SUFFIX_CFG_STR));
 
 				users.put(uuid, user);
-				user.recalculatePermissions();
 			} catch (Throwable t) {
 			}
 		}
@@ -90,7 +95,8 @@ public class UsersStorage {
 				user.group == SimpleUserPerms.getGroupsStorage().getDefaultGroup() &&
 				user.subGroups.isEmpty() &&
 				user.additionalPerms.isEmpty() &&
-				user.prefix == null
+				user.prefix == null &&
+				user.suffix == null
 			) {
 				continue;
 			}
