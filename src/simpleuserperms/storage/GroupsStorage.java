@@ -93,7 +93,7 @@ public class GroupsStorage {
 		for (Group group : groups.values()) {
 			ConfigurationSection section = config.createSection(group.getName());
 			section.set(PARENT_CFG_STR, group.getParentGroups().stream().map(Group::getName).collect(Collectors.toList()));
-			section.set(PERMS_CFG_STR, group.getPermissions());
+			section.set(PERMS_CFG_STR, Utils.sort(group.getPermissions()));
 			section.set(PREFIX_CFG_STR, group.prefix);
 			section.set(SUFFIX_CFG_STR, group.suffix);
 			if (defaultGroup == group) {

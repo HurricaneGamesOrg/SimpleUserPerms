@@ -103,7 +103,7 @@ public class UsersStorage {
 			ConfigurationSection section = config.createSection(entry.getKey().toString());
 			section.set(GROUP_CFG_STR, user.getMainGroup().getName());
 			section.set(SUBS_CFG_STR, user.getSubGroups().stream().map(Group::getName).collect(Collectors.toList()));
-			section.set(PERMS_CFG_STR, user.getAdditionalPermissions());
+			section.set(PERMS_CFG_STR, Utils.sort(user.getAdditionalPermissions()));
 			section.set(PREFIX_CFG_STR, user.prefix);
 			section.set(SUFFIX_CFG_STR, user.suffix);
 		}
