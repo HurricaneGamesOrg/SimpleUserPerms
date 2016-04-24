@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
 import simpleuserperms.SimpleUserPerms;
+import simpleuserperms.storage.User;
 import simpleuserperms.storage.User.ReadLockedEffectivePermissions;
 
 public class BukkitPermissions {
@@ -48,8 +49,12 @@ public class BukkitPermissions {
 			@SuppressWarnings("unchecked")
 			Map<String, Boolean> permissions = (Map<String, Boolean>) permissiosnMapField.get(attachment);
 			permissions.clear();
-			try (ReadLockedEffectivePermissions effPerms = SimpleUserPerms.getUsersStorage().getUser(uuid).getDirectEffectivePermissions()) {
+			User user = SimpleUserPerms.getUsersStorage().getUser(uuid);
+			try (ReadLockedEffectivePermissions effPerms = user.getDirectEffectivePermissions()) {
 				permissions.putAll(effPerms.getEffectivePermissions());
+			}
+			if (user.hasAllPermissions()) {
+				Bukkit.getPluginManager().getPermissions().forEach((permission) -> permissions.put(permission.getName(), Boolean.TRUE));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

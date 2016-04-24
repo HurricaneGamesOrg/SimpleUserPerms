@@ -26,6 +26,7 @@ public class User {
 	protected final HashSet<String> additionalPerms = new HashSet<>();
 	protected String prefix;
 	protected String suffix;
+	protected boolean hasAllPerms;
 
 	protected final HashMap<String, Boolean> activePermissions = new HashMap<>();
 
@@ -50,7 +51,8 @@ public class User {
 			subGroups.isEmpty() &&
 			additionalPerms.isEmpty() &&
 			prefix == null &&
-			suffix == null;
+			suffix == null &&
+			!hasAllPerms;
 	}
 
 	public UUID getUUID() {
@@ -206,6 +208,14 @@ public class User {
 
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
+	}
+
+	public boolean hasAllPermissions() {
+		return hasAllPerms;
+	}
+
+	public void setHasAllPermissions(boolean hasAllBukkitPerms) {
+		this.hasAllPerms = hasAllBukkitPerms;
 	}
 
 	public void recalculatePermissions() {

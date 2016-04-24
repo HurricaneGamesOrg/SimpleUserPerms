@@ -29,6 +29,9 @@ public class SharedUtils {
 
 	private static final Pattern splitP = Pattern.compile("[.]"); 
 	public static boolean hasPermission(User user, String permission) {
+		if (user.hasAllPermissions()) {
+			return true;
+		}
 		Player player = Bukkit.getPlayer(user.getUUID());
 		if (player != null) {
 			if (player.isPermissionSet(permission)) {
@@ -40,10 +43,6 @@ public class SharedUtils {
 			Boolean simpleResult = effective.get(permission);
 			if (simpleResult != null) {
 				return simpleResult;
-			}
-			Boolean allResult = effective.get("*");
-			if (allResult != null) {
-				return allResult;
 			}
 			String[] split = splitP.split(permission);
 			for (int i = split.length - 1; i > 0; i--) {
