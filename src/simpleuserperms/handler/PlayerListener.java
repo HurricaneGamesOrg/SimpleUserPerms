@@ -3,7 +3,6 @@ package simpleuserperms.handler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -16,7 +15,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerLoginLowest(PlayerLoginEvent event) {
 		//remove old attachment in case some shit happened
 		SimpleUserPerms.getBukkitPermissions().cleanup(event.getPlayer());
-		//calculate new permissionss
+		//calculate new permissions
 		SimpleUserPerms.getBukkitPermissions().updatePermissions(event.getPlayer());
 	}
 
@@ -28,18 +27,10 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	//attach player ref so user could update itself on change
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		SimpleUserPerms.getUsersStorage().getUser(event.getPlayer().getUniqueId()).setPlayerRef(event.getPlayer());
-	}
-
 	//cleanup attachments on quit
-	//cleanup player ref
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		SimpleUserPerms.getBukkitPermissions().cleanup(event.getPlayer());
-		SimpleUserPerms.getUsersStorage().getUser(event.getPlayer().getUniqueId()).clearPlayerRef();
 	}
 
 }

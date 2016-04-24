@@ -11,7 +11,7 @@ public class DefaultUserPermsCache {
 	}
 
 	public static void recalculateDefaultPerms() {
-		User user = new User(false);
+		User user = new User(null, false);
 		user.calculateGroupPerms(user.group);
 		defaultPerms = user.activePermissions;
 	}

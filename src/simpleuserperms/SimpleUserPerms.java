@@ -1,6 +1,5 @@
 package simpleuserperms;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import simpleuserperms.commands.Commands;
@@ -39,7 +38,6 @@ public class SimpleUserPerms extends JavaPlugin {
 		groupsStorage.load();
 		DefaultUserPermsCache.recalculateDefaultPerms();
 		usersStorage.load();
-		Bukkit.getOnlinePlayers().forEach(player -> usersStorage.getUser(player.getUniqueId()).setPlayerRef(player));
 		usersStorage.recalculateAll();
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new IntegrationListener(), this);

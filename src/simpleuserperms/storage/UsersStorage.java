@@ -22,9 +22,7 @@ public class UsersStorage {
 	private final ConcurrentHashMap<UUID, User> users = new ConcurrentHashMap<>();
 
 	public void recalculateAll() {
-		for (User user : users.values()) {
-			user.recalculatePermissions();
-		}
+		users.values().forEach(User::recalculatePermissions);
 	}
 
 	public User getUserIfPresent(UUID uuid) {
@@ -32,17 +30,11 @@ public class UsersStorage {
 	}
 
 	public User getUser(UUID uuid) {
-		return users.compute(uuid, (euuid, euser) -> euser != null ? euser : new User());
+		return users.compute(uuid, (euuid, euser) -> euser != null ? euser : new User(euuid));
 	}
 
 	public void deleteUser(UUID uuid) {
-		users.compute(uuid, (euuid, euser) -> {
-			User tuser = new User();
-			if (euser != null) {
-				tuser.setPlayerRef(euser.getPlayerRef());
-			}
-			return tuser;
-		});
+		users.remove(uuid);
 	}
 
 	private File getDataFile() {
@@ -63,7 +55,7 @@ public class UsersStorage {
 			try {
 				UUID uuid = UUID.fromString(uuidstr);
 				ConfigurationSection section = config.getConfigurationSection(uuidstr);
-				User user = new User();
+				User user = new User(uuid);
 
 				user.setMainGroup(groups.getGroupOrDefault(section.getString(GROUP_CFG_STR)), false);
 

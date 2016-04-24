@@ -1,12 +1,12 @@
 package simpleuserperms.storage;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -18,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import simpleuserperms.SimpleUserPerms;
 
 public class User {
+
+	protected final UUID uuid;
 
 	protected Group group = SimpleUserPerms.getGroupsStorage().getDefaultGroup();
 	protected final HashSet<Group> subGroups = new HashSet<>();
@@ -31,14 +33,19 @@ public class User {
 	protected final ReadLock readLock = lock.readLock();
 	protected final WriteLock writeLock = lock.writeLock();
 
-	public User() {
-		this(true);
+	public User(UUID uuid) {
+		this(uuid, true);
 	}
 
-	protected User(boolean applyDefault) {
+	protected User(UUID uuid, boolean applyDefault) {
+		this.uuid = uuid;
 		if (applyDefault) {
 			DefaultUserPermsCache.applyDefaultPermsTo(this);
 		}
+	}
+
+	public UUID getUUID() {
+		return uuid;
 	}
 
 	public void setMainGroup(Group group) {
@@ -192,23 +199,6 @@ public class User {
 		this.suffix = suffix;
 	}
 
-	protected WeakReference<Player> player;
-
-	public Player getPlayerRef() {
-		if (player != null) {
-			return player.get();
-		}
-		return null;
-	}
-
-	public void setPlayerRef(Player player) {
-		this.player = new WeakReference<Player>(player);
-	}
-
-	public void clearPlayerRef() {
-		this.player = null;
-	}
-
 	public void recalculatePermissions() {
 		writeLock.lock();
 		try {
@@ -236,26 +226,16 @@ public class User {
 	}
 
 	protected void update() {
-		if (player == null) {
-			return;
-		}
-		if (Bukkit.isPrimaryThread()) {
-			Player playerr = player.get();
-			if (playerr != null) { 
-				SimpleUserPerms.getBukkitPermissions().updatePermissions(playerr);
+		Runnable runnable = () -> {
+			Player player = Bukkit.getPlayer(uuid);
+			if (player != null) {
+				SimpleUserPerms.getBukkitPermissions().updatePermissions(player);
 			}
+		};
+		if (Bukkit.isPrimaryThread()) {
+			runnable.run();
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(SimpleUserPerms.class), new Runnable() {
-				@Override
-				public void run() {
-					if (player != null) {
-						Player playerr = player.get();
-						if (playerr != null) { 
-							SimpleUserPerms.getBukkitPermissions().updatePermissions(playerr);
-						}
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(SimpleUserPerms.class), runnable);
 		}
 	}
 

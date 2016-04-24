@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import simpleuserperms.storage.Group;
@@ -28,7 +29,7 @@ public class SharedUtils {
 
 	private static final Pattern splitP = Pattern.compile("[.]"); 
 	public static boolean hasPermission(User user, String permission) {
-		Player player = user.getPlayerRef();
+		Player player = Bukkit.getPlayer(user.getUUID());
 		if (player != null) {
 			if (player.isPermissionSet(permission)) {
 				return player.hasPermission(permission);
