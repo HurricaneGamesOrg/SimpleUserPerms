@@ -11,13 +11,8 @@ import org.bukkit.command.CommandSender;
 import simpleuserperms.SimpleUserPerms;
 import simpleuserperms.storage.DefaultUserPermsCache;
 import simpleuserperms.storage.Group;
-import simpleuserperms.storage.GroupsStorage;
-import simpleuserperms.storage.UsersStorage;
 
 public class Commands implements CommandExecutor {
-
-	private final UsersStorage users = SimpleUserPerms.getUsersStorage();
-	private final GroupsStorage groups = SimpleUserPerms.getGroupsStorage();
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -35,43 +30,43 @@ public class Commands implements CommandExecutor {
 			sender.sendMessage(ChatColor.YELLOW + label+ " setsuffix {USER} {SUFFIX} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Sets user suffix to {SUFFIX}");
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
-			groups.save();
-			users.save();
+			SimpleUserPerms.getGroupsStorage().save();
+			SimpleUserPerms.getUsersStorage().save();
 			sender.sendMessage(ChatColor.GOLD + "Groups and users saved");
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-			groups.load();
+			SimpleUserPerms.getGroupsStorage().load();
 			DefaultUserPermsCache.recalculateDefaultPerms();
-			users.load();
-			users.recalculateAll();
+			SimpleUserPerms.getUsersStorage().load();
+			SimpleUserPerms.getUsersStorage().recalculateAll();
 			sender.sendMessage(ChatColor.GOLD + "Grops and users reloaded");
 			return true;
 		} if (args.length == 3 && args[0].equalsIgnoreCase("setgroup")) {
 			String playerName = args[1];
 			String groupName = args[2];
-			Group group = groups.getGroup(groupName);
+			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
 			if (group == null) {
 				sender.sendMessage(ChatColor.RED + "Group " + groupName + " doesn't exist");
 				return true;
 			}
-			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setMainGroup(group);
+			SimpleUserPerms.getUsersStorage().getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setMainGroup(group);
 			sender.sendMessage(ChatColor.GOLD + "Group set");
 			return true;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("del")) {
 			String playerName = args[1];
-			users.deleteUser(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+			SimpleUserPerms.getUsersStorage().deleteUser(Bukkit.getOfflinePlayer(playerName).getUniqueId());
 			sender.sendMessage(ChatColor.GOLD + "User deleted");
 			return true;
 		} else if (args.length >= 3 && args[0].equalsIgnoreCase("setprefix")) {
 			String playerName = args[1];
 			String prefix = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).replace("\"", "");
-			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setPrefix(prefix);
+			SimpleUserPerms.getUsersStorage().getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setPrefix(prefix);
 			sender.sendMessage(ChatColor.GOLD + "Prefix set");
 			return true;
 		} else if (args.length >= 3 && args[0].equalsIgnoreCase("setsuffix")) {
 			String playerName = args[1];
 			String suffix = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).replace("\"", "");
-			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setSuffix(suffix);
+			SimpleUserPerms.getUsersStorage().getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setSuffix(suffix);
 			sender.sendMessage(ChatColor.GOLD + "Suffix set");
 			return true;
 		}

@@ -12,9 +12,7 @@ import com.earth2me.essentials.perm.PermissionsHandler;
 
 import simpleuserperms.SimpleUserPerms;
 import simpleuserperms.storage.Group;
-import simpleuserperms.storage.GroupsStorage;
 import simpleuserperms.storage.User;
-import simpleuserperms.storage.UsersStorage;
 
 public class EssentialsIntegration extends Integration {
 
@@ -39,21 +37,18 @@ public class EssentialsIntegration extends Integration {
 			super(plugin);
 		}
 
-		private final UsersStorage users = SimpleUserPerms.getUsersStorage();
-		private final GroupsStorage groups = SimpleUserPerms.getGroupsStorage();
-
 		@Override
 		public String getGroup(Player base) {
-			User user = users.getUserIfPresent(base.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
 			if (user != null) {
 				return user.getMainGroup().getName();
 			}
-			return groups.getDefaultGroup().getName();
+			return SimpleUserPerms.getGroupsStorage().getDefaultGroup().getName();
 		}
 
 		@Override
 		public List<String> getGroups(Player base) {
-			User user = users.getUserIfPresent(base.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
 			if (user != null) {
 				return SharedUtils.getUserGroupsL(user);
 			}
@@ -67,11 +62,11 @@ public class EssentialsIntegration extends Integration {
 
 		@Override
 		public boolean inGroup(Player base, String groupName) {
-			Group group = groups.getGroup(groupName);
+			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
 			if (group == null) {
 				return false;
 			}
-			User user = users.getUserIfPresent(base.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
 			if (user != null) {
 				return user.getMainGroup() == group || user.hasSubGroup(group);
 			}
@@ -80,7 +75,7 @@ public class EssentialsIntegration extends Integration {
 
 		@Override
 		public boolean hasPermission(Player base, String node) {
-			User user = users.getUserIfPresent(base.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
 			if (user != null) {
 				return SharedUtils.hasPermission(user, node);
 			}
@@ -89,12 +84,12 @@ public class EssentialsIntegration extends Integration {
 
 		@Override
 		public String getPrefix(Player base) {
-			return users.getUser(base.getUniqueId()).getPrefix();
+			return SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId()).getPrefix();
 		}
 
 		@Override
 		public String getSuffix(Player base) {
-			return users.getUser(base.getUniqueId()).getSuffix();
+			return SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId()).getSuffix();
 		}
 
 		@Override

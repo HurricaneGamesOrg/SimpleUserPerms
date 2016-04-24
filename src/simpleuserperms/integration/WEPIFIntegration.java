@@ -10,9 +10,7 @@ import com.sk89q.wepif.PermissionsResolverManager;
 
 import simpleuserperms.SimpleUserPerms;
 import simpleuserperms.storage.Group;
-import simpleuserperms.storage.GroupsStorage;
 import simpleuserperms.storage.User;
-import simpleuserperms.storage.UsersStorage;
 
 public class WEPIFIntegration extends Integration {
 
@@ -33,9 +31,6 @@ public class WEPIFIntegration extends Integration {
 
 	public static class WEPIFImpl implements PermissionsResolver {
 
-		private final UsersStorage users = SimpleUserPerms.getUsersStorage();
-		private final GroupsStorage groups = SimpleUserPerms.getGroupsStorage();
-
 		@SuppressWarnings("deprecation")
 		@Override
 		public String[] getGroups(String playerName) {
@@ -44,7 +39,7 @@ public class WEPIFIntegration extends Integration {
 
 		@Override
 		public String[] getGroups(OfflinePlayer player) {
-			User user = users.getUserIfPresent(player.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
 			if (user != null) {
 				return SharedUtils.getUserGroupsA(user);
 			}
@@ -69,7 +64,7 @@ public class WEPIFIntegration extends Integration {
 
 		@Override
 		public boolean hasPermission(OfflinePlayer player, String permission) {
-			User user = users.getUserIfPresent(player.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
 			if (user != null) {
 				return SharedUtils.hasPermission(user, permission);
 			}
@@ -84,11 +79,11 @@ public class WEPIFIntegration extends Integration {
 
 		@Override
 		public boolean inGroup(OfflinePlayer player, String groupName) {
-			Group group = groups.getGroup(groupName);
+			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
 			if (group == null) {
 				return false;
 			}
-			User user = users.getUserIfPresent(player.getUniqueId());
+			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
 			if (user != null) {
 				return user.getMainGroup() == group || user.hasSubGroup(group);
 			}
