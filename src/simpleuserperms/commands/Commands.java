@@ -56,13 +56,13 @@ public class Commands implements CommandExecutor {
 			return true;
 		} else if (args.length >= 3 && args[0].equalsIgnoreCase("setprefix")) {
 			String playerName = args[1];
-			String prefix = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+			String prefix = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).replace("\"", "");
 			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setPrefix(prefix);
 			sender.sendMessage(ChatColor.GOLD + "Prefix set");
 			return true;
 		} else if (args.length >= 3 && args[0].equalsIgnoreCase("setsuffix")) {
 			String playerName = args[1];
-			String suffix = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+			String suffix = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).replace("\"", "");
 			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setSuffix(suffix);
 			sender.sendMessage(ChatColor.GOLD + "Suffix set");
 			return true;
