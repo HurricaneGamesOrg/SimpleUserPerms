@@ -26,7 +26,7 @@ public class Commands implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "No perms");
 			return true;
 		}
-		if (args.length == 11 && args[0].equalsIgnoreCase("help")) {
+		if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage(ChatColor.YELLOW + label+ " save "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Saves users and groups to file");
 			sender.sendMessage(ChatColor.YELLOW + label+ " reload "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Loads users and groups from file");
 			sender.sendMessage(ChatColor.YELLOW + label+ " setgroup {USER} {GROUP} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Sets {USER} main group to {GROUP}");
