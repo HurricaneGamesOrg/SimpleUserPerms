@@ -1,10 +1,10 @@
 package simpleuserperms.integration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -27,7 +27,6 @@ public class SharedUtils {
 		return getUserGroupsL(user).toArray(new String[0]);
 	}
 
-	private static final Pattern splitP = Pattern.compile("[.]"); 
 	public static boolean hasPermission(User user, String permission) {
 		Player player = Bukkit.getPlayer(user.getUUID());
 		if (player != null) {
@@ -45,9 +44,8 @@ public class SharedUtils {
 			if (simpleResult != null) {
 				return simpleResult;
 			}
-			String[] split = splitP.split(permission);
-			for (int i = split.length - 1; i > 0; i--) {
-				Boolean result = effective.get(makeWildCard(split, i));
+			for (String part : new StringPartIterator(permission, '.')) {
+				Boolean result = effective.get(part + ".*");
 				if (result != null) {
 					return result;
 				}
@@ -55,11 +53,48 @@ public class SharedUtils {
 			return false;
 		}
 	}
-	private static String makeWildCard(String[] split, int len) {
-		ArrayList<String> parts = new ArrayList<String>();
-		parts.addAll(Arrays.asList(Arrays.copyOfRange(split, 0, len)));
-		parts.add("*");
-		return String.join(".", parts);
+
+	public static class StringPartIterator implements Iterator<String>, Iterable<String> {
+
+		private final char[] string;
+		private final char partDelim;
+		public StringPartIterator(String string, char partDelim) {
+			this.string = string.toCharArray();
+			this.partDelim = partDelim;
+			this.delimIndex = string.length() - 1;
+			findNextDelimIndex();
+		}
+
+		private int delimIndex;
+
+		private void findNextDelimIndex() {
+			while (delimIndex > 0) {
+				if (string[delimIndex--] == partDelim) {
+					break;
+				}
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return delimIndex > 0;
+		}
+
+		@Override
+		public String next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			int lastIndex = delimIndex + 1;
+			findNextDelimIndex();
+			return new String(string, 0, lastIndex);
+		}
+
+		@Override
+		public Iterator<String> iterator() {
+			return this;
+		}
+
 	}
 
 }
