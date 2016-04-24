@@ -37,7 +37,7 @@ public class SharedUtils {
 		}
 		try (ReadLockedEffectivePermissions perms = user.getDirectEffectivePermissions()) {
 			Map<String, Boolean> effective = perms.getEffectivePermissions();
-			Boolean hasAllResult = effective.get(permission);
+			Boolean hasAllResult = effective.get("*");
 			if (hasAllResult != null) {
 				return hasAllResult;
 			}
