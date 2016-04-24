@@ -26,7 +26,15 @@ public class Commands implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "No perms");
 			return true;
 		}
-		if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
+		if (args.length == 11 && args[0].equalsIgnoreCase("help")) {
+			sender.sendMessage(ChatColor.YELLOW + label+ " save "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Saves users and groups to file");
+			sender.sendMessage(ChatColor.YELLOW + label+ " reload "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Loads users and groups from file");
+			sender.sendMessage(ChatColor.YELLOW + label+ " setgroup {USER} {GROUP} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Sets {USER} main group to {GROUP}");
+			sender.sendMessage(ChatColor.YELLOW + label+ " del {USER} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Deletes user");
+			sender.sendMessage(ChatColor.YELLOW + label+ " setprefix {USER} {PREFIX} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Sets user prefix to {PREFIX}");
+			sender.sendMessage(ChatColor.YELLOW + label+ " setsuffix {USER} {SUFFIX} "+ChatColor.GRAY+" - " + ChatColor.AQUA + "Sets user suffix to {SUFFIX}");
+			return true;
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 			groups.save();
 			users.save();
 			sender.sendMessage(ChatColor.GOLD + "Groups and users saved");
@@ -49,7 +57,7 @@ public class Commands implements CommandExecutor {
 			users.getUser(Bukkit.getOfflinePlayer(playerName).getUniqueId()).setMainGroup(group);
 			sender.sendMessage(ChatColor.GOLD + "Group set");
 			return true;
-		} else if (args.length == 2 && args[0].equalsIgnoreCase("deluser")) {
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("del")) {
 			String playerName = args[1];
 			users.deleteUser(Bukkit.getOfflinePlayer(playerName).getUniqueId());
 			sender.sendMessage(ChatColor.GOLD + "User deleted");
