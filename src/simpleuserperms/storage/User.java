@@ -234,6 +234,16 @@ public class User {
 		}
 	}
 
+	protected String lastName;
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	protected void update() {
 		Runnable runnable = () -> {
 			Player player = Bukkit.getPlayer(uuid);

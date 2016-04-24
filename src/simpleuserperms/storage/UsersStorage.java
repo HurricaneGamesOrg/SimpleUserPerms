@@ -56,6 +56,7 @@ public class UsersStorage {
 	private static final String PERMS_CFG_STR = "permissions";
 	private static final String PREFIX_CFG_STR = "prefix";
 	private static final String SUFFIX_CFG_STR = "suffix";
+	private static final String LASTNAME_CFG_STR = "lastname";
 
 	public void load() {
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(getDataFile());
@@ -83,6 +84,8 @@ public class UsersStorage {
 				user.setPrefix(section.getString(PREFIX_CFG_STR));
 				user.setSuffix(section.getString(SUFFIX_CFG_STR));
 
+				user.setLastName(section.getString(LASTNAME_CFG_STR));
+
 				users.put(uuid, user);
 			} catch (Throwable t) {
 			}
@@ -102,6 +105,7 @@ public class UsersStorage {
 			section.set(PERMS_CFG_STR, Utils.sort(user.getAdditionalPermissions()));
 			section.set(PREFIX_CFG_STR, user.prefix);
 			section.set(SUFFIX_CFG_STR, user.suffix);
+			section.set(LASTNAME_CFG_STR, user.getLastName());
 		}
 		try {
 			config.save(getDataFile());

@@ -3,6 +3,7 @@ package simpleuserperms.handler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -27,6 +28,12 @@ public class PlayerListener implements Listener {
 		if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
 			SimpleUserPerms.getBukkitPermissions().cleanup(event.getPlayer());
 		}
+	}
+
+	//update last name
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		SimpleUserPerms.getUsersStorage().getUser(event.getPlayer().getUniqueId()).setLastName(event.getPlayer().getName());
 	}
 
 	//cleanup attachments on quit
