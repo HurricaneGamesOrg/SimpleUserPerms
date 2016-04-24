@@ -222,8 +222,8 @@ public class User {
 		writeLock.lock();
 		try {
 			activePermissions.clear();
-			calculateGroupPerms(group);
 			subGroups.forEach(this::calculateGroupPerms);
+			calculateGroupPerms(group);
 			additionalPerms.forEach(this::calculatePermission);
 		} finally {
 			writeLock.unlock();
@@ -232,8 +232,8 @@ public class User {
 	}
 
 	protected void calculateGroupPerms(Group group) {
-		group.permissions.forEach(this::calculatePermission);
 		group.parentGroups.forEach(this::calculateGroupPerms);
+		group.permissions.forEach(this::calculatePermission);
 	}
 
 	protected void calculatePermission(String permission) {
