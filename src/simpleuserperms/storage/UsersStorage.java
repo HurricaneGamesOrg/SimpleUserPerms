@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,6 +36,15 @@ public class UsersStorage {
 
 	public void deleteUser(UUID uuid) {
 		users.remove(uuid);
+	}
+
+	public void deleteUserIf(UUID uuid, Function<User, Boolean> func) {
+		users.compute(uuid, (euuid, euser) -> {
+			if (euser != null) {
+				return func.apply(euser) ? null : euser;
+			}
+			return null;
+		});
 	}
 
 	private File getDataFile() {
@@ -83,13 +93,7 @@ public class UsersStorage {
 		YamlConfiguration config = new YamlConfiguration();
 		for (Entry<UUID, User> entry : users.entrySet()) {
 			User user = entry.getValue();
-			if (
-				user.group == SimpleUserPerms.getGroupsStorage().getDefaultGroup() &&
-				user.subGroups.isEmpty() &&
-				user.additionalPerms.isEmpty() &&
-				user.prefix == null &&
-				user.suffix == null
-			) {
+			if (user.isDefault()) {
 				continue;
 			}
 			ConfigurationSection section = config.createSection(entry.getKey().toString());

@@ -44,6 +44,15 @@ public class User {
 		}
 	}
 
+	public boolean isDefault() {
+		return
+			group == SimpleUserPerms.getGroupsStorage().getDefaultGroup() &&
+			subGroups.isEmpty() &&
+			additionalPerms.isEmpty() &&
+			prefix == null &&
+			suffix == null;
+	}
+
 	public UUID getUUID() {
 		return uuid;
 	}
