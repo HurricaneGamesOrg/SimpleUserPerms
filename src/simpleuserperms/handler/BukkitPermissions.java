@@ -52,9 +52,10 @@ public class BukkitPermissions {
 			User user = SimpleUserPerms.getUsersStorage().getUser(uuid);
 			try (ReadLockedEffectivePermissions effPerms = user.getDirectEffectivePermissions()) {
 				permissions.putAll(effPerms.getEffectivePermissions());
-			}
-			if (user.hasAllPermissions()) {
-				Bukkit.getPluginManager().getPermissions().forEach((permission) -> permissions.put(permission.getName(), Boolean.TRUE));
+				Boolean allPerms = effPerms.getEffectivePermissions().get("*");
+				if (allPerms != null && allPerms) {
+					Bukkit.getPluginManager().getPermissions().forEach((permission) -> permissions.put(permission.getName(), Boolean.TRUE));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
