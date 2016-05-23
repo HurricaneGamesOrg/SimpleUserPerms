@@ -1,7 +1,6 @@
 package simpleuserperms.integration;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.Player;
@@ -39,20 +38,13 @@ public class EssentialsIntegration extends Integration {
 
 		@Override
 		public String getGroup(Player base) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
-			if (user != null) {
-				return user.getMainGroup().getName();
-			}
-			return SimpleUserPerms.getGroupsStorage().getDefaultGroup().getName();
+			return SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId()).getMainGroup().getName();
 		}
 
 		@Override
 		public List<String> getGroups(Player base) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
-			if (user != null) {
-				return SharedUtils.getUserGroupsL(user);
-			}
-			return new ArrayList<String>();
+			User user = SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId());
+			return SharedUtils.getUserGroupsL(user);
 		}
 
 		@Override
@@ -66,20 +58,14 @@ public class EssentialsIntegration extends Integration {
 			if (group == null) {
 				return false;
 			}
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
-			if (user != null) {
-				return user.getMainGroup() == group || user.hasSubGroup(group);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId());
+			return user.getMainGroup() == group || user.hasSubGroup(group);
 		}
 
 		@Override
 		public boolean hasPermission(Player base, String node) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(base.getUniqueId());
-			if (user != null) {
-				return SharedUtils.hasPermission(user, node);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(base.getUniqueId());
+			return SharedUtils.hasPermission(user, node);
 		}
 
 		@Override

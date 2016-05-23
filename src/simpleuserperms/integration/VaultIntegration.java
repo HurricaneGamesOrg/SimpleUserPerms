@@ -100,11 +100,8 @@ public class VaultIntegration extends Integration {
 			if (group == null) {
 				return false;
 			}
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return user.getMainGroup() == group || user.hasSubGroup(group);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return user.getMainGroup() == group || user.hasSubGroup(group);
 		}
 
 		public boolean playerAddGroup(String world, OfflinePlayer player, String groupName) {
@@ -126,40 +123,28 @@ public class VaultIntegration extends Integration {
 			if (group == null) {
 				return false;
 			}
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				user.removeSubGroup(group);
-				if (user.getMainGroup() == group) {
-					user.setMainGroup(SimpleUserPerms.getGroupsStorage().getDefaultGroup());
-				}
-				return true;
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			user.removeSubGroup(group);
+			if (user.getMainGroup() == group) {
+				user.setMainGroup(SimpleUserPerms.getGroupsStorage().getDefaultGroup());
 			}
-			return false;
+			return true;
 		}
 
 		public String[] getPlayerGroups(String world, OfflinePlayer player) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return SharedUtils.getUserGroupsA(user);
-			}
-			return new String[0];
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return SharedUtils.getUserGroupsA(user);
 		}
 
 		public String getPrimaryGroup(String world, OfflinePlayer player) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return user.getMainGroup().getName();
-			}
-			return SimpleUserPerms.getGroupsStorage().getDefaultGroup().getName();
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return user.getMainGroup().getName();
 		}
 
 		@Override
 		public boolean playerHas(String world, OfflinePlayer player, String permission) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				SharedUtils.hasPermission(user, permission);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return SharedUtils.hasPermission(user, permission);
 		}
 
 	}

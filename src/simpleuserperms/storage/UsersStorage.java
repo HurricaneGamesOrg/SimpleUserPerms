@@ -26,10 +26,6 @@ public class UsersStorage {
 		users.values().forEach(User::recalculatePermissions);
 	}
 
-	public User getUserIfPresent(UUID uuid) {
-		return users.get(uuid);
-	}
-
 	public User getUser(UUID uuid) {
 		return users.compute(uuid, (euuid, euser) -> euser != null ? euser : new User(euuid));
 	}

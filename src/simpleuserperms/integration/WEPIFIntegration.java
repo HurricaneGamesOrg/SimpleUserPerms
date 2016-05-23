@@ -39,11 +39,8 @@ public class WEPIFIntegration extends Integration {
 
 		@Override
 		public String[] getGroups(OfflinePlayer player) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return SharedUtils.getUserGroupsA(user);
-			}
-			return new String[0];
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return SharedUtils.getUserGroupsA(user);
 		}
 
 		@SuppressWarnings("deprecation")
@@ -64,11 +61,8 @@ public class WEPIFIntegration extends Integration {
 
 		@Override
 		public boolean hasPermission(OfflinePlayer player, String permission) {
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return SharedUtils.hasPermission(user, permission);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return SharedUtils.hasPermission(user, permission);
 		}
 
 		@SuppressWarnings("deprecation")
@@ -83,11 +77,8 @@ public class WEPIFIntegration extends Integration {
 			if (group == null) {
 				return false;
 			}
-			User user = SimpleUserPerms.getUsersStorage().getUserIfPresent(player.getUniqueId());
-			if (user != null) {
-				return user.getMainGroup() == group || user.hasSubGroup(group);
-			}
-			return false;
+			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
+			return user.getMainGroup() == group || user.hasSubGroup(group);
 		}
 
 		@Override
