@@ -11,13 +11,16 @@ import simpleuserperms.SimpleUserPerms;
 import simpleuserperms.storage.Group;
 import simpleuserperms.storage.User;
 
-public class VaultIntegration extends Integration {
+public class VaultIntegration {
 
 	private final Permission impl = new DeprecatedPermImpl();
 
-	@Override
-	protected void load() {
+	public void load() {
 		Bukkit.getServicesManager().register(Permission.class, impl, JavaPlugin.getPlugin(Vault.class), ServicePriority.Highest);
+	}
+
+	public void unload() {
+		Bukkit.getServicesManager().unregister(impl);
 	}
 
 	public static abstract class BasicPermImpl extends Permission {

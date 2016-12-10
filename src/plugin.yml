@@ -3,6 +3,7 @@ main: simpleuserperms.SimpleUserPerms
 version: 1.0
 author: _Shevchik_
 load: STARTUP
+softdepend: [Vault]
 commands:
   simpleuserperms:
     description: All SimpleUserPerms commands

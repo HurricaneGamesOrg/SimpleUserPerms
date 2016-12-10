@@ -1,11 +1,12 @@
 package simpleuserperms;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import simpleuserperms.commands.Commands;
 import simpleuserperms.handler.BukkitPermissions;
 import simpleuserperms.handler.PlayerListener;
-import simpleuserperms.integration.Integration.IntegrationListener;
+import simpleuserperms.integration.VaultIntegration;
 import simpleuserperms.storage.DefaultUserPermsCache;
 import simpleuserperms.storage.GroupsStorage;
 import simpleuserperms.storage.UsersStorage;
@@ -30,6 +31,8 @@ public class SimpleUserPerms extends JavaPlugin {
 		return groupsStorage;
 	}
 
+	private VaultIntegration vintergration;
+
 	@Override
 	public void onEnable() {
 		groupsStorage = new GroupsStorage(this);
@@ -39,13 +42,19 @@ public class SimpleUserPerms extends JavaPlugin {
 		DefaultUserPermsCache.recalculateDefaultPerms();
 		usersStorage.load();
 		usersStorage.recalculateAll();
+		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+			vintergration = new VaultIntegration();
+			vintergration.load();
+		}
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		getServer().getPluginManager().registerEvents(new IntegrationListener(), this);
 		getCommand("simpleuserperms").setExecutor(new Commands());
 	}
 
 	@Override
 	public void onDisable() {
+		if (vintergration != null) {
+			vintergration.unload();
+		}
 		groupsStorage.save();
 		usersStorage.save();
 	}

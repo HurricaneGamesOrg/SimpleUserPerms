@@ -12,11 +12,10 @@ import simpleuserperms.SimpleUserPerms;
 import simpleuserperms.storage.Group;
 import simpleuserperms.storage.User;
 
-public class WEPIFIntegration extends Integration {
+public class WEPIFIntegration {
 
 	private final WEPIFImpl impl = new WEPIFImpl();
 
-	@Override
 	protected void load() {
 		PermissionsResolverManager manager = PermissionsResolverManager.getInstance();
 		try {
