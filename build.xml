@@ -1,0 +1,24 @@
+<project name="SimpleUserPerms" default="build" basedir=".">
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="libs.dir" value="${basedir}/libs" />
+	<property name="target.dir" value="${basedir}/target" />
+
+	<path id="libs">
+		<fileset dir="${libs.dir}" includes="**/*.jar" />
+	</path>
+
+	<target name="build">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${libs.dir}" />
+		<javac source="1.8" target="1.8" encoding="UTF-8" srcdir="${src.dir}" destdir="${classes.dir}" classpathref="libs" debug="on" />
+		<jar destfile="${target.dir}/SimpleUserPerms.jar" basedir="${classes.dir}">
+			<fileset file="${src.dir}/plugin.yml" />
+			<fileset file="LICENSE" />
+		</jar>
+		<delete dir="${build.dir}" />
+	</target>
+
+</project>
