@@ -1,207 +1,28 @@
 package simpleuserperms.integration;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
-import simpleuserperms.SimpleUserPerms;
-import simpleuserperms.storage.Group;
-import simpleuserperms.storage.User;
+import simpleuserperms.integration.chat.DeprecatedChatImpl;
+import simpleuserperms.integration.perms.DeprecatedPermImpl;
 
 public class VaultIntegration {
 
-	private final Permission impl = new DeprecatedPermImpl();
+	private final Permission pimpl = new DeprecatedPermImpl();
+	private final Chat cimpl = new DeprecatedChatImpl(pimpl);
 
 	public void load() {
-		Bukkit.getServicesManager().register(Permission.class, impl, JavaPlugin.getPlugin(Vault.class), ServicePriority.Highest);
+		Bukkit.getServicesManager().register(Permission.class, pimpl, JavaPlugin.getPlugin(Vault.class), ServicePriority.Highest);
+		Bukkit.getServicesManager().register(Chat.class, cimpl, JavaPlugin.getPlugin(Vault.class), ServicePriority.Highest);
 	}
 
 	public void unload() {
-		Bukkit.getServicesManager().unregister(impl);
-	}
-
-	public static abstract class BasicPermImpl extends Permission {
-
-		@Override
-		public String getName() {
-			return JavaPlugin.getPlugin(SimpleUserPerms.class).getName();
-		}
-
-		@Override
-		public boolean hasGroupSupport() {
-			return true;
-		}
-
-		@Override
-		public boolean hasSuperPermsCompat() {
-			return true;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return true;
-		}
-
-		@Override
-		public String[] getGroups() {
-			return SimpleUserPerms.getGroupsStorage().getGroupNames().toArray(new String[0]);
-		}
-		
-	}
-
-	public static abstract class ModernPermImpl extends BasicPermImpl {
-
-		@Override
-		public boolean groupAdd(String worldName, String groupName, String permission) {
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group != null) {
-				group.addPermission(worldName);
-				return true;
-			}
-			return false;
-		}
-
-		@Override
-		public boolean groupHas(String worldName, String groupName, String permission) {
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group != null) {
-				return group.hasPermission(permission);
-			}
-			return false;
-		}
-
-		@Override
-		public boolean groupRemove(String worldName, String groupName, String permission) {
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group != null) {
-				group.removePermission(permission);
-				return true;
-			}
-			return false;
-		}
-
-		public boolean playerAdd(String world, OfflinePlayer player, String permission) {
-			SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId()).addAdditionalPermission(permission);
-			return true;
-		}
-
-		public boolean playerRemove(String world, OfflinePlayer player, String permission) {
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			if (user.hasAdditionalPermission(permission)) {
-				user.removeAdditionalPermission(permission);
-			} else {
-				user.addAdditionalPermission("-"+permission);
-			}
-			return true;
-		}
-
-		public boolean playerInGroup(String world, OfflinePlayer player, String groupName) {
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group == null) {
-				return false;
-			}
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			return user.getMainGroup() == group || user.hasSubGroup(group);
-		}
-
-		public boolean playerAddGroup(String world, OfflinePlayer player, String groupName) {
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group == null) {
-				return false;
-			}
-			if (user.getMainGroup() == SimpleUserPerms.getGroupsStorage().getDefaultGroup()) {
-				user.setMainGroup(group);
-			} else {
-				user.addSubGroup(group);
-			}
-			return true;
-		}
-
-		public boolean playerRemoveGroup(String world, OfflinePlayer player, String groupName) {
-			Group group = SimpleUserPerms.getGroupsStorage().getGroup(groupName);
-			if (group == null) {
-				return false;
-			}
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			user.removeSubGroup(group);
-			if (user.getMainGroup() == group) {
-				user.setMainGroup(SimpleUserPerms.getGroupsStorage().getDefaultGroup());
-			}
-			return true;
-		}
-
-		public String[] getPlayerGroups(String world, OfflinePlayer player) {
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			return SharedUtils.getUserGroupsA(user);
-		}
-
-		public String getPrimaryGroup(String world, OfflinePlayer player) {
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			return user.getMainGroup().getName();
-		}
-
-		@Override
-		public boolean playerHas(String world, OfflinePlayer player, String permission) {
-			User user = SimpleUserPerms.getUsersStorage().getUser(player.getUniqueId());
-			return SharedUtils.hasPermission(user, permission);
-		}
-
-	}
-
-	public static class DeprecatedPermImpl extends ModernPermImpl {
-
-		@Deprecated
-		@Override
-		public String[] getPlayerGroups(String worldName, String playerName) {
-			return getPlayerGroups(worldName, Bukkit.getOfflinePlayer(playerName));
-		}
-
-		@Deprecated
-		@Override
-		public String getPrimaryGroup(String worldName, String playerName) {
-			return getPrimaryGroup(worldName, Bukkit.getOfflinePlayer(playerName));
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerAdd(String worldName, String playerName, String permission) {
-			return playerAdd(worldName, Bukkit.getOfflinePlayer(playerName), permission);
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerAddGroup(String worldName, String playerName, String groupName) {
-			return playerAddGroup(worldName, Bukkit.getOfflinePlayer(playerName), groupName);
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerHas(String worldName, String playerName, String permission) {
-			return playerHas(worldName, Bukkit.getOfflinePlayer(playerName), permission);
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerInGroup(String worldName, String playerName, String groupName) {
-			return playerInGroup(worldName, Bukkit.getOfflinePlayer(playerName), groupName);
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerRemove(String worldName, String playerName, String permission) {
-			return playerRemove(worldName, Bukkit.getOfflinePlayer(playerName), permission);
-		}
-
-		@Deprecated
-		@Override
-		public boolean playerRemoveGroup(String worldName, String playerName, String groupName) {
-			return playerRemoveGroup(worldName, Bukkit.getOfflinePlayer(playerName), groupName);
-		}
-
+		Bukkit.getServicesManager().unregister(pimpl);
+		Bukkit.getServicesManager().unregister(cimpl);
 	}
 
 }
