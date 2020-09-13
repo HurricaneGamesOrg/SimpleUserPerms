@@ -1,0 +1,11 @@
+name: SimpleUserPerms
+main: org.hurricanegames.simpleuserperms.SimpleUserPerms
+api-version: 1.13
+load: STARTUP
+loadbefore: [Vault]
+version: 3.0
+author: _Shevchik_
+commands:
+  simpleuserperms:
+    description: All SimpleUserPerms commands
+    usage: /<command>
